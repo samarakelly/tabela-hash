@@ -1,0 +1,86 @@
+class tabela_hash:
+    def __init__(self,tamanho):
+        self.tamanho= tamanho
+        self.qnt_elemento= 0
+        self.tabela= []
+        self.inicializar_tabela()
+
+    class elemento:
+        def __init__(self, key, value):
+            self.key= key
+            self.value=value
+
+    def items(self):
+        items=[]
+        for lista in self.tabela:
+            for elemento in lista:
+                tupla= elemento.key, elemento.value
+                items.append(tupla)
+        return items
+
+    def keys(self):
+        keys= []
+        for lista in self.tabela:
+            for elemento in lista:
+                keys.append(elemento.key)
+        return keys
+
+    def values(self):
+        values= []
+        for lista in self.tabela:
+            for elemento in lista:
+                values.append(elemento.values)
+
+    def __iter__(self):
+        return iter(self.keys())
+
+    def __str__(self):
+        retorno = "["
+        i=0
+        for chave, valor in self.items():
+            retorno+= chave.__repr__
+            retorno+= ':'
+            retorno+= valor.__repr__
+
+            if 1< len(self)-1:
+                retorno+= ','
+            i+=1
+        retorno+=']'
+        return retorno
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __delitem__(self, key):
+        indicie= self.fun_hash(key)
+        for i, elemento in enumerate(self.tabela):
+            if elemento.key == key:
+                del self.tabela[indicie][i]
+                self.qnt_elemento-=1
+                return
+        raise KeyError(key)
+
+    def buscar_elemento(self, key):
+        for lista in self.tabela:
+            for elemento in lista:
+                if elemento.key== key:
+                    return elemento
+        raise KeyError(key)
+
+    def atualizar_elemento(self, key, value):
+        try:
+            elemento= self.buscar_elemento(key)
+            elemento.value= value
+
+        except KeyError:
+            indicie= self.fun_hash(key)
+            novo= self.elemento(key, value)
+            self.tabela[indicie].append(novo)
+            self.qnt_elemento+=1
+
+    def fun_hash(self, key):
+        return hash(key) % self.tamanho
+
+    def inicializar_tabela(self):
+        for i in range(self.tamanho):
+            self.tabela.append([])
